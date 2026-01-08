@@ -1,0 +1,110 @@
+import { RcFile } from 'antd/es/upload';
+import { EntityType, SearchBase } from '../general';
+
+export interface ThemeConfigType extends EntityType {
+  name?: string;
+  colorPrimary?: string;
+  colorPrimaryActive?: string;
+  colorPrimaryHover?: string;
+  fontFamily?: string;
+  borderRadius?: string;
+  colorBorder?: string;
+  colorTextPlaceholder?: string;
+  colorText?: string;
+  isActive?: boolean;
+  logoPath?: string;
+  avatarFramePath?: string;
+  logoFramePath?: string;
+  backgroundImagePath?: string;
+  backgroundLogoPath?: string;
+  faviconPath?: string;
+  logoTitle?: string;
+  backgroundTitle?: string;
+  companyName?: string;
+  address?: string;
+  phoneNumber?: string;
+  fax?: string;
+  email?: string;
+  enableBackgroundTextBlendMode?: boolean;
+  fixedBackgroundTextColor?: string;
+  logoFile?: RcFile;
+  avatarFrameFile?: RcFile;
+  logoFrameFile?: RcFile;
+  backgroundImageFile?: RcFile;
+  backgroundLogoFile?: RcFile;
+  faviconFile?: RcFile;
+}
+
+export interface ThemeConfigCreateOrUpdateType {
+  id?: string;
+  name?: string;
+  colorPrimary?: string;
+  colorPrimaryActive?: string;
+  colorPrimaryHover?: string;
+  fontFamily?: string;
+  borderRadius?: string;
+  colorBorder?: string;
+  colorTextPlaceholder?: string;
+  colorText?: string;
+  isActive?: boolean;
+  logoPath?: string;
+  avatarFramePath?: string;
+  logoFramePath?: string;
+  backgroundImagePath?: string;
+  backgroundLogoPath?: string;
+  faviconPath?: string;
+  backgroundTitle?: string;
+  companyName?: string;
+  address?: string;
+  phoneNumber?: string;
+  fax?: string;
+  email?: string;
+  logoTitle?: string;
+  enableBackgroundTextBlendMode?: boolean;
+  fixedBackgroundTextColor?: string;
+  logoFile?: RcFile;
+  avatarFrameFile?: RcFile;
+  logoFrameFile?: RcFile;
+  backgroundImageFile?: RcFile;
+  backgroundLogoFile?: RcFile;
+  faviconFile?: RcFile;
+  // Flag để biết xóa ảnh
+  removeLogo?: boolean;
+  removeAvatarFrame?: boolean;
+  removeLogoFrame?: boolean;
+  removeBackgroundImage?: boolean;
+  removeBackgroundLogo?: boolean;
+  removeFavicon?: boolean;
+}
+
+export interface ThemeConfigSearchType extends SearchBase {
+  name?: string;
+  colorPrimary?: string;
+  colorPrimaryActive?: string;
+  colorPrimaryHover?: string;
+  fontFamily?: string;
+  borderRadius?: string;
+  colorBorder?: string;
+  colorTextPlaceholder?: string;
+  colorText?: string;
+  isActive?: boolean;
+  logoPath?: string;
+  avatarFramePath?: string;
+  logoFramePath?: string;
+  backgroundImagePath?: string;
+  backgroundLogoPath?: string;
+  faviconPath?: string;
+  logoTitle?: string;
+  backgroundTitle?: string;
+  companyName?: string;
+  address?: string;
+  phoneNumber?: string;
+  fax?: string;
+  email?: string;
+  logoFile?: RcFile;
+  avatarFrameFile?: RcFile;
+  logoFrameFile?: RcFile;
+  backgroundImageFile?: RcFile;
+  backgroundLogoFile?: RcFile;
+  faviconFile?: RcFile;
+}

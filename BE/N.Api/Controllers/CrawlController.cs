@@ -8,15 +8,18 @@ namespace N.Api.Controllers
     [ApiController]
     public class CrawlController : ControllerBase
     {
-        public CrawlController()
+        private readonly ICrawl _crawl;
+
+        public CrawlController(ICrawl crawl)
         {
+            _crawl = crawl;
         }
 
 
         [HttpGet("")]
         public IActionResult CrawlWeb()
         {
-            Crawl.CrawlWeb();
+            _crawl.CrawlWeb();
             return Ok("Crawling initiated.");
         }
 

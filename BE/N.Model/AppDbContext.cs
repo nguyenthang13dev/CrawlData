@@ -27,6 +27,13 @@ namespace N.Model
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Department> Department { get; set; }
 
+        public DbSet<Lession> Lession { get; set; }
+        public DbSet<Course> Course { get; set; }
+        public DbSet<DetailLession> DetailLession { get; set; }
+
+        public DbSet<SubjectNXB> SubjectNXBs { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<AppUser>().HasData(

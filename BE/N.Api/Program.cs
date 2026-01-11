@@ -1,6 +1,7 @@
 ﻿using N.Api;
 using N.Api.Hubs;
 using N.Extensions;
+using N.Service.CrawlData;
 using OfficeOpenXml;
 using System.Security.Authentication;
 
@@ -33,6 +34,9 @@ internal class Program
 
         builder.Services.AddTransient<ExceptionHandlingMiddleware>();
         builder.Services.AddSignalR();
+
+
+        builder.Services.AddScoped<ICrawl, Crawl>();
 
         var app = builder.Build();
 

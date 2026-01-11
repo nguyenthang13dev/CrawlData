@@ -3,6 +3,7 @@ using N.Model;
 using N.Model.Entities;
 using N.Service.Dto;
 using System.Linq.Expressions;
+//using Z.EntityFramework.Extensions.EFCore;
 
 namespace N.Service.Service
 {
@@ -26,6 +27,11 @@ namespace N.Service.Service
         {
             return _dbset.AsQueryable();
         }
+        public virtual async Task Create(T entity)
+        {
+             _dbset.Add(entity);
+             _context.SaveChanges();
+        }
 
         public virtual async Task CreateAsync(T entity)
         {
@@ -35,8 +41,12 @@ namespace N.Service.Service
 
         public virtual async Task CreateAsync(IEnumerable<T> entities)
         {
-            await _dbset.AddRangeAsync(entities);
-            await _context.SaveChangesAsync();
+            //_dbset.BulkInsert(entities, options =>
+            //{
+            //    options.InsertKeepIdentity = true;
+            //});
+             _dbset.AddRange(entities);
+             _context.SaveChanges();
         }
 
         public virtual async Task UpdateAsync(T entity)

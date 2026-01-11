@@ -1,4 +1,10 @@
 ﻿using HtmlAgilityPack;
+using N.Model.Entities;
+using N.Service.CourseService;
+using N.Service.DetailLessionService;
+using N.Service.LessionService;
+using N.Service.SubjectNXBService;
+using N.Service.SubjectService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +14,30 @@ using System.Threading.Tasks;
 
 namespace N.Service.CrawlData
 {
-    public class Crawl
+    public class Crawl : ICrawl
     {
+        private readonly ICourseService _courseService;
+        private readonly ILessionService _lessionService;
+        private readonly IDetailLessionService _detailLessionService;
+        private readonly ISubjectService _subjectService;
+        private readonly ISubjectNXBService _subjectNXBService;
+
+        public Crawl(ICourseService courseService, ILessionService lessionService, IDetailLessionService detailLessionService, ISubjectService subjectService, ISubjectNXBService subjectNXBService)
+        {
+            _courseService = courseService;
+            _lessionService = lessionService;
+            this._detailLessionService = detailLessionService;
+            this._subjectService = subjectService;
+            this._subjectNXBService = subjectNXBService;
+        }
 
         public static string Domain = "https://loigiaihay.com";
+
+        public static string GetTitleLession(string lession_title)
+        {
+            var title = lession_title.Substring((lession_title.LastIndexOf(".") == -1 ? lession_title.LastIndexOf(":") : lession_title.LastIndexOf(".")) + 1).Trim();
+            return title;
+        }
 
 
         private static void RemoveEventAttributes(HtmlNode root)
@@ -25,29 +51,76 @@ namespace N.Service.CrawlData
             }
         }
 
-        public static void CrawlDetail(string url, string title)
+        public async Task CrawlDetail(string url, string title, string titleSubject, SubjectNXB? IdSub)
         {
             var web = new HtmlWeb();
             var doc = web.Load(Domain + url);
 
 
             var listBox = doc.DocumentNode.SelectNodes("//div[contains(@class, 'box-question')]");
-            var list = new List<ParsedBoxQuestion>();
+            var list = new List<DetailLession>();
 
             if (listBox is null)
                 return;
 
-            foreach (var node in listBox)
+
+            var course = new Course
             {
-                list.Add(BoxQuestionParser.ParseBoxQuestion(node, Domain));
+                Title = titleSubject,
+                CodeSubJect = "",
+                Subject = IdSub.Name,
+                Grade = 12,
+                Index = 1,
+                IdSub = IdSub.Id,
+            };
+            var isChecked = await _courseService.CheckCourseTitle(titleSubject);
+
+            if (!isChecked)
+            {
+                await _courseService.CreateAsync(course);
+            }
+            else
+            {
+                course = await _courseService.GetCourseTitle(titleSubject);
+            }
+            bool isCheckedLession = await _lessionService.CheckLession(titleSubject);
+
+            var lession = new Lession
+            {
+                CourseId = course.Id,
+                Title = title,
+                Grade = 1,
+            };
+            if (!isCheckedLession)
+            {
+                await _lessionService.CreateAsync(lession);
             }
 
-            
+            foreach (var node in listBox)
+            {
+                list.AddRange(BoxQuestionParser.ParseBoxQuestion(node,  lession.Id, Domain));
+            }
+
+            if (list.Any())
+            {
+                try
+                {
+                    await _detailLessionService.CreateAsync(list);
+                    Task.Delay(100);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
+
+
         }
 
 
 
-        public static void CrawlLesson(string url)
+        public void CrawlLesson(string url, SubjectNXB? IdSub)
         {
             var web = new HtmlWeb();
             var doc = web.Load(Domain + url);
@@ -57,7 +130,7 @@ namespace N.Service.CrawlData
 
             if (nodesSubject != null)
             {
-                var listTup = new List<Tuple<string, string>>();
+                var listTup = new List<Tuple<string, string, string>>();
 
                 foreach (var node in nodesSubject)
                 {
@@ -72,7 +145,7 @@ namespace N.Service.CrawlData
                     if (divSubject == null)
                         continue;
 
-                    listTup.AddRange(divSubject.Select(t => new Tuple<string, string>(t.GetAttributeValue("href", string.Empty), t.SelectSingleNode(".//span").InnerText.Trim())).ToList());
+                    listTup.AddRange(divSubject.Select(t => new Tuple<string, string, string>(t.GetAttributeValue("href", string.Empty), GetTitleLession(t.SelectSingleNode(".//span").InnerText.Trim()), GetTitleLession(titleSubject))).ToList());
                     
                 }
 
@@ -80,9 +153,7 @@ namespace N.Service.CrawlData
                 {
                     try
                     {
-                        var href = item.Item1;
-                        var title = item.Item2;
-                        CrawlDetail(href, title);
+                        CrawlDetail(item.Item1, item.Item2, item.Item3, IdSub);
                     }
                     catch (Exception ex)
                     {
@@ -91,14 +162,27 @@ namespace N.Service.CrawlData
                     }
                 }
 
+                //Parallel.ForEach(listTup, item =>
+                //{
+                //    try
+                //    {
+                //        CrawlDetail(item.Item1, item.Item2, item.Item3);
+                //    }
+                //    catch (Exception ex)
+                //    {
+
+                //        throw;
+                //    }
+                //});
 
 
-               
+
+
             }
 
         }
 
-        public static void CrawlWeb()
+        public async Task CrawlWeb()
         {
             var web = new HtmlWeb();
             var doc = web.Load("https://loigiaihay.com/lop-12.html");
@@ -106,18 +190,43 @@ namespace N.Service.CrawlData
 
             if (nodes != null)
             {
-                List<string> ListHref = new();
+                List<SubjectNXB> ListHref = new();
                 foreach (var node in nodes)
                 {
                     var titleNode = node.SelectSingleNode(".//h2");
                     var titleSubject = titleNode.InnerText.Trim();
                     var listSubjectItems = node.SelectNodes(".//div//ul//li//a");
 
-                    var ListHrefCrawl = listSubjectItems.Select(t => t.GetAttributeValue("href", string.Empty)).ToList();
+
+                    var Subject =  _subjectService.SubjectCheck(titleSubject);
+
+                    if (Subject == null)
+                    {
+                        Subject = new Subject
+                        {
+                            Code = titleSubject,
+                            SubjectName = titleSubject
+                        };
+
+                         _subjectService.Create(Subject);
+                    }
+
+                    var listSujectNXH = listSubjectItems.Select(t => new SubjectNXB
+                    {
+                        Href = t.GetAttributeValue("href", string.Empty),
+                        Name = t.InnerText.Trim(),
+                        Subject = Subject.Id,
+                    }).ToList();
+
+                    if (listSujectNXH.Any())
+                    {
+                        _subjectNXBService.CreateAsync(listSujectNXH);
+                    }
+
 
                     if (titleSubject.ToUpper().Equals("MÔN NGỮ VĂN"))
                     {
-                        ListHref.AddRange(ListHrefCrawl);
+                        ListHref.AddRange(listSujectNXH);
                     }
 
                 }
@@ -127,14 +236,19 @@ namespace N.Service.CrawlData
                 {
                     try
                     {
-                        CrawlLesson(src);
+                        CrawlLesson(src.Href, src);
                     }
                     catch (Exception)
                     {
                         throw;
                     }
                 }
-               
+
+
+                //Parallel.ForEach(ListHref, src =>
+                //{
+                //    CrawlLesson(src);
+                //});
             }
         }
     }

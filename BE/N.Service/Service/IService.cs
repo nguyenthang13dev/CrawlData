@@ -17,5 +17,6 @@ namespace N.Service.Service
         Task DeleteAsync(IEnumerable<T> entities);
         Task DeleteAsync(Expression<Func<T, bool>> filter);
         Task<List<DropdownOption>> GetDropdownOptions<TField, TValue>(Expression<Func<T, TField>> displayField, Expression<Func<T, TValue>> valueField, TValue? selected = default);
+        Task Create(T entity);
     }
 }

@@ -1,0 +1,24 @@
+.subjectItem {
+  display: block;
+  padding: 15px 0;
+}
+
+.subjectTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #333;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.resourceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .subjectTitle {
+    font-size: 16px;
+  }
+}

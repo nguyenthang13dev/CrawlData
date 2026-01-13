@@ -2,9 +2,8 @@
 
 import React from 'react';
 import ResourceItem from '../ResourceItem/ResourceItem';
-import styles from './SubjectSection.module.css';
 
-import '../page.module.css';
+import '../page.css';
 
 interface Resource {
   title: string;
@@ -22,7 +21,7 @@ const SubjectSection: React.FC<SubjectSectionProps> = ({ title, resources }) => 
     <div className='subject-item'>
       <h2 className='font-opensans-exb'>{title}</h2>
       <div>
-        <ul className={styles.resourceList}>
+        <ul >
           {resources.map((resource, index) => (
             <ResourceItem
               key={index}

@@ -47,7 +47,6 @@ namespace N.Service.SubjectService
                 {
                    
                 }
-
                 query = query.OrderByDescending(x => x.CreatedDate);
                 return await PagedList<SubjectDto>.CreateAsync(query, search);
             }

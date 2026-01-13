@@ -2,7 +2,8 @@
 
 import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
-import styles from './BookCategoryDropdown.module.css';
+
+import '../page.css';
 
 interface BookCategory {
   id: string;
@@ -24,17 +25,17 @@ const BookCategoryDropdown: React.FC<Props> = ({ categories, onCategorySelect })
   };
 
   return (
-    <div className={styles.selectBookCat}>
+    <div className={'selectBookCat'}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={styles.dropdownToggle}
+        className={'dropdownToggle'}
       >
         Tất cả
-        <ChevronDown className={styles.chevronIcon} />
+        <ChevronDown className={'chevronIcon'} />
       </button>
 
       {isOpen && (
-        <ul className={styles.dropdownMenu}>
+        <ul className={'dropdownMenu'}>
           <li>
             <a href="#" onClick={(e) => { e.preventDefault(); handleSelect('0'); }}>
               Tất cả

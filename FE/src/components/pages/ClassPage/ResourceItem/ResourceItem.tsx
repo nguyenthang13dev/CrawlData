@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import styles from './ResourceItem.module.css';
 
-import '../page.module.css';
+import '../page.css';
 
 interface ResourceItemProps {
   title: string;
@@ -16,11 +15,11 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ title, href, bookCat }) => 
   const imageUrl = `/themes/images/${bookCat}.png`;
 
   return (
-    <li className={`book-cat ${styles.bookCat} ${styles[bookCat]}`}>
+    <li className={`book-cat book-cat-show`}>
       <a href={href} title={title}>
         {isDefaultCategory ? (
           <img
-            className={styles.triangleIcon}
+            className={'triangleIcon'}
             src="/themes/images/tamgiac.png"
             alt="icon"
           />
@@ -28,10 +27,10 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ title, href, bookCat }) => 
           <img
             src={imageUrl}
             alt={title}
-            className={styles.categoryImage}
+            className={'categoryImage'}
           />
         )}
-        <span className={styles.resourceTitle}>{title}</span>
+        <span>{title}</span>
       </a>
     </li>
   );

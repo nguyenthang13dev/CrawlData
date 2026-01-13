@@ -34,6 +34,8 @@ namespace N.Controllers
 
 
 
+
+
         [HttpPost("Create")]
         public async Task<DataResponse<Subject>> Create([FromBody] SubjectCreateVM model)
         {

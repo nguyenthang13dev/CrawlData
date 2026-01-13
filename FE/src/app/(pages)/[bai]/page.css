@@ -1,0 +1,148 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #2888e1;
+}
+
+.title {
+  font-size: 28px;
+  color: #005eb6;
+  margin: 0 0 15px 0;
+  font-weight: bold;
+}
+
+.meta {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #666;
+}
+
+.author,
+.category {
+  display: inline-block;
+}
+
+.author::before {
+  content: '✎ ';
+  margin-right: 5px;
+}
+
+.category::before {
+  content: '📚 ';
+  margin-right: 5px;
+}
+
+.content {
+  padding: 20px 0;
+}
+
+.section {
+  margin-bottom: 25px;
+  line-height: 1.8;
+}
+
+.sectionHeading {
+  font-size: 18px;
+  color: #2888e1;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-left: 4px solid #2888e1;
+  padding-left: 12px;
+  font-weight: bold;
+}
+
+.sectionContent {
+  padding-left: 20px;
+  color: #333;
+  font-size: 15px;
+}
+
+.sectionContent p {
+  margin: 0 0 12px 0;
+  text-align: justify;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  padding: 6px 0;
+  padding-left: 24px;
+  position: relative;
+}
+
+.list li::before {
+  content: '→ ';
+  position: absolute;
+  left: 0;
+  color: #2888e1;
+  font-weight: bold;
+}
+
+.footer {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .sectionHeading {
+    font-size: 16px;
+  }
+
+  .sectionContent {
+    font-size: 14px;
+  }
+
+  .meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .sectionHeading {
+    font-size: 15px;
+  }
+
+  .sectionContent {
+    padding-left: 15px;
+    font-size: 13px;
+  }
+}

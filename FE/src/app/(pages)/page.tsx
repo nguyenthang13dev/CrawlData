@@ -13,14 +13,12 @@ export default function HomePage() {
         {/* Header */}
         <div className="v2">
           <SectionHotPage />
-        <section className="v2-main">
-          <div className="container v2-layout">
-          <MainSectionPage />
-          </div>
+          <section className="v2-main">
+            <div className="container v2-layout">
+            <MainSectionPage />
+            </div>
         </section>
           </div>
-      
-         
     </div>
   );
 }

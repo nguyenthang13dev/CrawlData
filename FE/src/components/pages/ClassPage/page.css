@@ -92,6 +92,11 @@ ul.list_style li:before {
 }
 
 
+
+.font-opensans-exb {
+    font-size: 30px;
+}
+
 /* phần hết phần pop up */
 .container{
     width: 100%;

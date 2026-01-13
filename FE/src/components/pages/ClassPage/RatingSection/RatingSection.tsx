@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import styles from './RatingSection.module.css';
+
+import '../page.css';
 
 interface RatingSectionProps {
   classId?: string;
@@ -44,15 +45,15 @@ const RatingSection: React.FC<RatingSectionProps> = ({
   const ratingWidth = `${(displayRating / 5) * 100}%`;
 
   return (
-    <div className={styles.ratingSection}>
-      <div className={styles.starRatings}>
-        <span className={styles.voteTitle}>Bình chọn: </span>
+    <div className={'ratingSection'}>
+      <div className={'starRatings'}>
+        <span className={'voteTitle'}>Bình chọn: </span>
         <div
-          className={styles.kkstars}
+          className={'kkstars'}
           onMouseLeave={() => setHoverRating(null)}
         >
           <div
-            className={styles.kkFuel}
+            className={'kkFuel'}
             style={{ width: ratingWidth }}
           />
           {[1, 2, 3, 4, 5].map((star) => (
@@ -71,10 +72,10 @@ const RatingSection: React.FC<RatingSectionProps> = ({
         </div>
       </div>
 
-      {hasRated && <p className={styles.thankYou}>Cảm ơn bạn đã vote</p>}
+      {hasRated && <p className={'thankYou'}>Cảm ơn bạn đã vote</p>}
 
       {!hasRated && (
-        <div className={styles.ratingInfo}>
+        <div className={'ratingInfo'}>
           <span>{rating}</span>
           <span>trên</span>
           <span>{totalVotes}</span>

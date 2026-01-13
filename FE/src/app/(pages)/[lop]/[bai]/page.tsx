@@ -1,6 +1,6 @@
 'use client';
 
-import  from './page.css';
+import styles from './page.module.css';
 
 interface BaiSoanData {
   title: string;
@@ -58,26 +58,26 @@ const BaiSoanPage = () => {
   };
 
   return (
-    <div className={container}>
+    <div className={styles.container}>
       {/* Header */}
-      <div className={header}>
-        <h1 className={title}>{baiSoan.title}</h1>
-        <div className={meta}>
-          {baiSoan.author && <span className={author}>Tác giả: {baiSoan.author}</span>}
+      <div className={styles.header}>
+        <h1 className={styles.title}>{baiSoan.title}</h1>
+        <div className={styles.meta}>
+          {baiSoan.author && <span className={styles.author}>Tác giả: {baiSoan.author}</span>}
           {baiSoan.bookCategory && (
-            <span className={category}>Sách: {baiSoan.bookCategory}</span>
+            <span className={styles.category}>Sách: {baiSoan.bookCategory}</span>
           )}
         </div>
       </div>
 
       {/* Content */}
-      <div className={content}>
+      <div className={styles.content}>
         {baiSoan.sections.map((section, index) => (
-          <div key={index} className={section}>
-            <h2 className={sectionHeading}>{section.heading}</h2>
-            <div className={sectionContent}>
+          <div key={index} className={styles.section}>
+            <h2 className={styles.sectionHeading}>{section.heading}</h2>
+            <div className={styles.sectionContent}>
               {Array.isArray(section.content) ? (
-                <ul className={list}>
+                <ul className={styles.list}>
                   {section.content.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}

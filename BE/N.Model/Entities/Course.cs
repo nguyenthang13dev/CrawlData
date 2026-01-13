@@ -15,7 +15,7 @@ namespace N.Model.Entities
         public int Grade { get; set; }
         public int Index { get; set; }
         public string Title { get; set; }
-
+        public string Href { get; set; }
         public Guid? IdSub { get; set; }
     }
 }

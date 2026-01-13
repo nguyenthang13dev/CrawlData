@@ -33,7 +33,13 @@ namespace N.Controllers
 
 
 
-
+        [HttpGet("GetGradeSubjectNXBDtos")]
+        [AllowAnonymous]
+        public async Task<DataResponse<List<GradeSubjectDtos>>> GetGradeSubjectNXBDtos()
+        {
+            var res = await _SubjectService.GetGradeSubjectNXBDtos();
+            return DataResponse<List<GradeSubjectDtos>>.Success(res);
+        }
 
 
         [HttpPost("Create")]

@@ -1,12 +1,13 @@
-using N.Model.Entities;
-using N.Service.SubjectService.Dto;
-using N.Service.Common;
 using Microsoft.EntityFrameworkCore;
-using N.Service.Dto;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Reflection;
-using N.Service.Service;
 using N.Model;
+using N.Model.Entities;
+using N.Service.Common;
+using N.Service.Dto;
+using N.Service.Service;
+using N.Service.SubjectNXBService.Dto;
+using N.Service.SubjectService.Dto;
+using System.Reflection;
 
 namespace N.Service.SubjectService
 {
@@ -24,6 +25,28 @@ namespace N.Service.SubjectService
         public Subject SubjectCheck(string text)
         {
             return _context.Subjects.Where(t => t.SubjectName.Contains(text)).FirstOrDefault();
+        }
+
+
+        public async Task<List<GradeSubjectDtos>> GetGradeSubjectNXBDtos()
+        {
+            var query = from q in GetQueryable()
+
+                        join subject in _context.SubjectNXBs.AsQueryable()
+                        on q.Id equals subject.Subject into ListSubjects
+
+                        select new GradeSubjectDtos
+                        {
+                            CodeObject = q.Code,
+                            Name = q.SubjectName,
+                            Id = q.Id,
+                            SubjectNXBS = ListSubjects.Select(t => new SubjectNXBDto { 
+                                Href = t.Href,
+                                Name = t.Name,
+                                Subject = t.Subject,
+                            }).ToList()
+                        };
+            return await query.ToListAsync();
         }
 
 

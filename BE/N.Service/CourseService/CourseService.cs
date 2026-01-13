@@ -30,6 +30,7 @@ namespace N.Service.CourseService
             return _context.Course.Any(t => t.Title.Contains(Title.Trim()));
         }
 
+
         public async Task<PagedList<CourseDto>> GetData(CourseSearchVM search)
         {
             try

@@ -1,3 +1,4 @@
+
 using N.Model.Entities;
 using N.Service.SubjectNXBService.Dto;
 using N.Service.Common;
@@ -11,6 +12,7 @@ namespace N.Service.SubjectNXBService
         Task<PagedList<SubjectNXBDto>> GetData(SubjectNXBSearchVM search);
 
         Task<SubjectNXBDto> GetDto(Guid id);
+        Task<List<ListCourseBySubjetDtos>> GetListCourseBySubjetDtos(Guid IdSub);
         Task<SubjectNXB> SubjectCheck(string text);
     }
 }

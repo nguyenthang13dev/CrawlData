@@ -11,6 +11,7 @@ namespace N.Service.SubjectService
         Task<PagedList<SubjectDto>> GetData(SubjectSearchVM search);
 
         Task<SubjectDto> GetDto(Guid id);
+        Task<List<GradeSubjectDtos>> GetGradeSubjectNXBDtos();
         Subject SubjectCheck(string text);
     }
 }

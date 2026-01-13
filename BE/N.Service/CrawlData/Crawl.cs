@@ -72,6 +72,7 @@ namespace N.Service.CrawlData
                 Grade = 12,
                 Index = 1,
                 IdSub = IdSub.Id,
+                Href = url
             };
             var isChecked = await _courseService.CheckCourseTitle(titleSubject);
 

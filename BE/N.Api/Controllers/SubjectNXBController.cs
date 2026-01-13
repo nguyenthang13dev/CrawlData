@@ -32,6 +32,14 @@ namespace N.Controllers
         }
 
 
+        [HttpGet("GetListCourseBySubjetDtos")]
+        [AllowAnonymous]
+        public async Task<DataResponse<List<ListCourseBySubjetDtos>>> GetListCourseBySubjetDtos([FromQuery] Guid CourseId)
+        {
+            var res = await _SubjectNXBService.GetListCourseBySubjetDtos(CourseId);
+            return DataResponse<List<ListCourseBySubjetDtos>>.Success(res);
+        }
+
         [HttpPost("Create")]
         public async Task<DataResponse<SubjectNXB>> Create([FromBody] SubjectNXBCreateVM model)
         {

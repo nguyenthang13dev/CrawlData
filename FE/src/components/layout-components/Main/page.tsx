@@ -5,11 +5,16 @@ import { Button } from "antd";
 
 import Reason from "../Reason/page";
 import '../SectionHot/hot.css';
+import { useRouter } from "next/navigation";
 
 
 const MainSectionPage = () =>
 {
 
+  const router = useRouter();
+  const handleNavigate = (id: string) => {
+    router.push(`/${id}`);
+  }
 
   // Grade levels
   const grades = [
@@ -42,73 +47,73 @@ const MainSectionPage = () =>
                             
                             <ul className="listCardClass" id="listCardClass">
           <li>
-            <a href="https://loigiaihay.com/lop-12.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('12')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop12.png" alt="Lớp 12" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-11.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('11')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop11.png" alt="Lớp 11" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-10.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('10')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop10.png" alt="Lớp 10" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-9.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('9')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop9.png" alt="Lớp 9" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-8.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('8')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop8.png" alt="Lớp 8" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-7.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('7')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop7.png" alt="Lớp 7" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-6.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('6')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop6.png" alt="Lớp 6" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-5.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('5')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop5.png" alt="Lớp 5" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-4.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('4')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop4.png" alt="Lớp 4" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-3.html" className="btnStudyNowBox">
+            <a onClick={() => handleNavigate('3')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop3.png" alt="Lớp 3" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-2.html" className="btnStudyNowBox">
+            <a  onClick={() => handleNavigate('2')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop2.png" alt="Lớp 2" />
               <span className="btnStudyNow">Học ngay</span>
             </a>
           </li>
           <li>
-            <a href="https://loigiaihay.com/lop-1.html" className="btnStudyNowBox">
+            <a  onClick={() => handleNavigate('1')} className="btnStudyNowBox">
               <img src="https://m.loigiaihay.com/themes/images/imageClass/lop1.png" alt="Lớp 1" />
               <span className="btnStudyNow">Học ngay</span>
             </a>

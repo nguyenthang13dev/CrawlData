@@ -27,7 +27,6 @@ export default function ClassPage() {
         
         if (id) {
           const response: ApiResponse<GradeSubjectDtos[]> = await subjectService.getGradeSubjectNXB(id);
-          console.log('API Response:', response);
           if (response.data && Array.isArray(response.data)) {
             console.log('Grade Subjects Data:', response.data);
             setGradeSubjects(response.data);
@@ -129,9 +128,7 @@ export default function ClassPage() {
                 {/* Subjects Grid */}
                 {gradeSubjects.length > 0 ? (
                   gradeSubjects.map((gradeSubject, index) => {
-                    console.log(`GradeSubject ${index}:`, gradeSubject);
                     const sectionData = mapToSubjectSectionData(gradeSubject);
-                    console.log(`SectionData ${index}:`, sectionData);
                     return (
                       <SubjectSection
                         key={gradeSubject.Id || `subject-${index}`}

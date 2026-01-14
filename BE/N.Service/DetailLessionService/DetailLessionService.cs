@@ -15,6 +15,7 @@ namespace N.Service.DetailLessionService
 
         private readonly AppDbContext _context;
 
+
         public DetailLessionService(
            AppDbContext context ) : base( context )
         {

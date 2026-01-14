@@ -1,8 +1,101 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import './page.css';
+import { subjectNXBService } from '@/services/SubjectNXBService/SubjectNXBService.service';
+import { ListCourseBySubjectDtos, ListLessonByCourseDtos, LessonDto } from '@/types/Subject/Subject';
+import { ApiResponse } from '@/types/general';
 
 const BaiSoanPage = () => {
+  const params = useParams();
+  const [coursesList, setCoursesList] = useState<ListCourseBySubjectDtos[]>([]);
+  const [lessonsMap, setLessonsMap] = useState<Record<string, LessonDto[]>>({});
+  const [lessonsLoading, setLessonsLoading] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        // Lấy subjectId từ params - có thể là bai (bài học)
+        const subjectId = params.bai as string;
+        
+        if (subjectId) {
+          const response: ApiResponse<ListCourseBySubjectDtos[]> = 
+            await subjectNXBService.getListCourseBySubject(subjectId);
+          
+          if (response.data && Array.isArray(response.data)) {
+            setCoursesList(response.data);
+            // Lấy lessons cho tất cả courses
+            fetchAllLessons(response.data);
+          } else {
+            setError('Dữ liệu không hợp lệ');
+          }
+        } else {
+          setError('Không tìm thấy ID bài học');
+        }
+      } catch (err: any) {
+        setError(err?.message || 'Có lỗi xảy ra khi tải dữ liệu');
+        console.error('Error fetching courses:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [params.bai]);
+
+  // Hàm lấy lessons cho tất cả courses
+  const fetchAllLessons = async (courses: ListCourseBySubjectDtos[]) => {
+    const allCourses: { courseId: string; courseName: string }[] = [];
+    
+    // Thu thập tất cả course IDs
+    courses.forEach((courseGroup) => {
+      if (courseGroup.courses && courseGroup.courses.length > 0) {
+        courseGroup.courses.forEach((course) => {
+          if (course.id) {
+            allCourses.push({ courseId: course.id, courseName: course.name });
+          }
+        });
+      }
+    });
+
+    // Gọi API cho từng course (có thể tối ưu sau bằng cách gọi song song)
+    const lessonsData: Record<string, LessonDto[]> = {};
+    const loadingState: Record<string, boolean> = {};
+
+    for (const { courseId, courseName } of allCourses) {
+      loadingState[courseId] = true;
+      try {
+        const response: ApiResponse<ListLessonByCourseDtos[]> = 
+          await subjectNXBService.getListLessonByCourse(courseId);
+        
+        if (response.data && Array.isArray(response.data)) {
+          // Flatten lessons từ tất cả các response
+          const lessons: LessonDto[] = [];
+          response.data.forEach((lessonGroup) => {
+            if (lessonGroup.lessons && lessonGroup.lessons.length > 0) {
+              lessons.push(...lessonGroup.lessons);
+            }
+          });
+          lessonsData[courseId] = lessons;
+        }
+      } catch (err) {
+        console.error(`Error fetching lessons for course ${courseId}:`, err);
+        lessonsData[courseId] = [];
+      } finally {
+        loadingState[courseId] = false;
+      }
+    }
+
+    setLessonsMap(lessonsData);
+    setLessonsLoading(loadingState);
+  };
   return (
     <div className="box_content nopad">
       <div className="box">
@@ -79,426 +172,150 @@ const BaiSoanPage = () => {
           </div>
           <br />
 
-          <div className="box clearfix font-opensans-b font-16" id="event_1_columns" style={{ paddingLeft: '15px' }}>
-            <h2
-              id="event34853"
-              style={{
-                marginBottom: '10px',
-                fontSize: '18px',
-                display: 'inline-block',
-              }}
-              className="title-event-parent font-opensans-exb pm0"
-            >
-              <a
-                style={{ color: '#2888e1' }}
-                href="/soan-van-12-ket-noi-tri-thuc-tap-1-e34853.html"
-                title="Soạn Văn 12 Kết nối tri thức tập 1"
-              >
-                <strong>Soạn Văn 12 Kết nối tri thức tập 1</strong>
-              </a>
-            </h2>
-            <div>
-              <div className="subject-item no-bg pm0" style={{ paddingLeft: 0 }}>
-                <h2
-                  id="event34897"
-                  className="font-opensans-b"
-                  style={{ marginBottom: '0px', fontSize: '18px' }}
-                >
-                  <a style={{ color: '#df7100', textDecoration: 'none !important' }}>
-                    <img src="/themes/images/star.png" alt="" />
-                    <strong>Bài 1. Khả năng lớn lao của tiểu thuyết</strong>
-                  </a>
-                </h2>
-                <div className="event-articles-wrap-2-cols">
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-xuan-toc-do-cuu-quoc-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a155694.html"
-                        title="Soạn bài Xuân Tóc Đỏ cứu quốc SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          1. Xuân Tóc Đỏ cứu quốc (Trích Số đỏ - Vũ Trọng Phụng)
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-noi-buon-chien-tranh-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a155915.html"
-                        title="Soạn bài Nỗi buồn chiến tranh SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>2. Nỗi buồn chiến tranh (Bảo Ninh)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-thuc-hanh-tieng-viet-bien-phap-tu-tu-noi-mia-nghich-ngu-dac-diem-va-tac-dung-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a155916.html"
-                        title="Soạn bài Thực hành Tiếng Việt Biện pháp tu từ nói mỉa, nghịch ngữ: Đặc điểm và tác dụng SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          3. Thực hành Tiếng Việt Biện pháp tu từ nói mỉa, nghịch ngữ: Đặc điểm và
-                          tác dụng
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-viet-bai-van-nghi-luan-so-sanh-danh-gia-hai-tac-pham-truyen-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a155917.html"
-                        title="Soạn bài Viết bài văn nghị luận so sánh, đánh giá hai tác phẩm truyện SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>4. Viết bài văn nghị luận so sánh, đánh giá hai tác phẩm truyện</span>
-                      </a>
-                    </li>
-                  </ul>
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-noi-va-nghe-trinh-bay-ket-qua-danh-gia-so-sanh-hai-tac-pham-truyen-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a156244.html"
-                        title="Soạn bài Nói và nghe: Trình bày kết quả đánh giá so sánh hai tác phẩm truyện SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          5. Nói và nghe: Trình bày kết quả đánh giá so sánh hai tác phẩm truyện
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-cung-co-mo-rong-trang-36-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a156255.html"
-                        title="Soạn bài Củng cố mở rộng trang 36 SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>6. Củng cố mở rộng trang 36</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-thuc-hanh-doc-tren-xuong-cuu-nan-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a156716.html"
-                        title="Soạn bài Thực hành đọc: Trên xuồng cứu nạn SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>7. Trên xuồng cứu nạn (Trích cuộc đời của Pi)</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="subject-item no-bg pm0" style={{ paddingLeft: 0 }}>
-                <h2
-                  id="event35562"
-                  className="font-opensans-b"
-                  style={{ marginBottom: '0px', fontSize: '18px' }}
-                >
-                  <a style={{ color: '#df7100', textDecoration: 'none !important' }}>
-                    <img src="/themes/images/star.png" alt="" />
-                    <strong>Bài 2. Những thế giới thơ</strong>
-                  </a>
-                </h2>
-                <div className="event-articles-wrap-2-cols">
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-cam-hoai-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157303.html"
-                        title="Soạn bài Cảm hoài SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>1. Cảm hoài (Trích Nỗi lòng - Đặng Dung)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-tay-tien-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157693.html"
-                        title="Soạn bài Tây Tiến SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>2. Tây Tiến (Quang Dũng)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-dan-ghi-ta-cua-lor-ca-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157717.html"
-                        title="Soạn bài Đàn ghi ta của Lor - ca SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>3. Đàn ghi ta của Lor - ca (Thanh Thảo)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-thuc-hanh-tieng-viet-tac-dung-cua-mot-so-bien-phap-tu-tu-trong-tho-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157738.html"
-                        title="Soạn bài Thực hành tiếng Việt: Tác dụng của một số biện pháp tu từ trong thơ SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          4. Thực hành tiếng Việt: Tác dụng của một số biện pháp tu từ trong thơ
-                        </span>
-                      </a>
-                    </li>
-                  </ul>
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-viet-bai-van-nghi-luan-so-sanh-danh-gia-hai-tac-pham-tho-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157773.html"
-                        title="Soạn bài Viết bài văn nghị luận so sánh, đánh giá hai tác phẩm thơ SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>5. Viết bài văn nghị luận so sánh, đánh giá hai tác phẩm thơ</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-noi-va-nghe-trinh-bay-ket-qua-so-sanh-danh-gia-hai-tac-pham-tho-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157777.html"
-                        title="Soạn bài Nói và nghe: Trình bày kết quả so sánh, đánh giá hai tác phẩm thơ SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          6. Nói và nghe: Trình bày kết quả so sánh, đánh giá hai tác phẩm thơ
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-cung-co-mo-rong-trang-59-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157783.html"
-                        title="Soạn bài Củng cố, mở rộng trang 59 SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>7. Củng cố, mở rộng trang 59</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-bai-tho-so-28-sgk-ngu-van-12-tap-1-ket-noi-tri-thuc-a157790.html"
-                        title="Soạn bài Bài thơ số 28 SGK Ngữ văn 12 tập 1 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>8. Bài thơ số 28 (Ta-go)</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>Đang tải dữ liệu...</div>
+          ) : error ? (
+            <div style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+              Lỗi: {error}
             </div>
-            <h2
-              id="event34854"
-              style={{
-                marginBottom: '10px',
-                fontSize: '18px',
-                display: 'inline-block',
-              }}
-              className="title-event-parent font-opensans-exb pm0"
-            >
-              <a
-                style={{ color: '#2888e1' }}
-                href="/soan-van-12-ket-noi-tri-thuc-tap-2-e34854.html"
-                title="Soạn Văn 12 Kết nối tri thức tập 2"
-              >
-                <strong>Soạn Văn 12 Kết nối tri thức tập 2</strong>
-              </a>
-            </h2>
-            <div>
-              <div className="subject-item no-bg pm0" style={{ paddingLeft: 0 }}>
-                <h2
-                  id="event35955"
-                  className="font-opensans-b"
-                  style={{ marginBottom: '0px', fontSize: '18px' }}
-                >
-                  <a style={{ color: '#df7100', textDecoration: 'none !important' }}>
-                    <img src="/themes/images/star.png" alt="" />
-                    <strong>Bài 6: Hồ Chí Minh - "Văn hóa phải soi đường cho quốc dân đi"</strong>
-                  </a>
-                </h2>
-                <div className="event-articles-wrap-2-cols">
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-tac-gia-ho-chi-minh-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a160936.html"
-                        title="Soạn bài Tác gia Hồ Chí Minh SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>1. Tác gia Hồ Chí Minh </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-tuyen-ngon-doc-lap-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161220.html"
-                        title="Soạn bài Tuyên ngôn độc lập SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>2. Tuyên ngôn độc lập (Hồ Chí Minh)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-mo-chieu-toi-nguyen-tieu-ram-thang-gieng-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161399.html"
-                        title="Soạn bài Mộ (Chiều tối) + Nguyên tiêu (Rằm tháng giêng) SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>3. Mộ (Chiều tối) + Nguyên tiêu (Rằm tháng giêng) (Hồ Chí Minh)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-nhung-tro-lo-hay-la-va-ren-va-phan-boi-chau-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161413.html"
-                        title="Soạn bài Những trò lố hay là Va-ren và Phan Bội Châu SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>4. Những trò lố hay là Va-ren và Phan Bội Châu (Nguyễn Ái Quốc)</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-mot-so-bien-phap-lam-tang-tinh-khang-dinh-phu-dinh-trong-van-ban-nghi-luan-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161418.html"
-                        title="Soạn bài Một số biện pháp làm tăng tính khẳng định, phủ định trong văn bản nghị luận SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>
-                          5. Một số biện pháp làm tăng tính khẳng định, phủ định trong văn bản nghị
-                          luận
-                        </span>
-                      </a>
-                    </li>
-                  </ul>
-                  <ul>
-                    <li>
-                      <a
-                        href="/soan-bai-viet-bao-cao-ket-qua-cua-bai-tap-du-an-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161767.html"
-                        title="Soạn bài Viết báo cáo kết quả của bài tập dự án SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>6. Viết báo cáo kết quả của bài tập dự án</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-noi-va-nghe-trinh-bay-ket-qua-cua-bai-tap-du-an-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161770.html"
-                        title="Soạn bài Nói và nghe: Trình bày kết quả của bài tập dự án SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>7. Nói và nghe: Trình bày kết quả của bài tập dự án</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-cung-co-mo-rong-trang-36-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161775.html"
-                        title="Soạn bài Củng cố, mở rộng trang 36 SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>8. Củng cố, mở rộng trang 36</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/soan-bai-thuc-hanh-doc-vong-nguyet-canh-khuya-sgk-ngu-van-12-tap-2-ket-noi-tri-thuc-a161951.html"
-                        title="Soạn bài Thực hành đọc: Vọng nguyệt + Cảnh khuya SGK Ngữ văn 12 tập 2 Kết nối tri thức"
-                      >
-                        <img
-                          style={{ padding: '0 5px 2px 0px' }}
-                          src="/themes/images/tamgiac.png"
-                          alt=""
-                        />
-                        <span>9. Thực hành đọc: Vọng nguyệt + Cảnh khuya</span>
-                      </a>
-                    </li>
-                  </ul>
+          ) : (
+            <div className="box clearfix font-opensans-b font-16" id="event_1_columns" style={{ paddingLeft: '15px' }}>
+              {coursesList.map((courseGroup, groupIndex) => (
+                <div key={courseGroup.idPubSub || groupIndex}>
+                  <h2
+                    style={{
+                      marginBottom: '10px',
+                      fontSize: '18px',
+                      display: 'inline-block',
+                    }}
+                    className="title-event-parent font-opensans-exb pm0"
+                  >
+                    <a style={{ color: '#2888e1' }} href="#" title={courseGroup.title}>
+                      <strong>{courseGroup.title}</strong>
+                    </a>
+                  </h2>
+                  <div>
+                    {courseGroup.courses && courseGroup.courses.length > 0 && (
+                      <div className="subject-item no-bg pm0" style={{ paddingLeft: 0 }}>
+                        <div className="event-articles-wrap-2-cols">
+                          <ul>
+                            {courseGroup.courses.slice(0, Math.ceil(courseGroup.courses.length / 2)).map((course, index) => (
+                              <li key={course.id || index}>
+                                <a href={course.href || '#'} title={course.title || course.name}>
+                                  <img
+                                    style={{ padding: '0 5px 2px 0px' }}
+                                    src="/themes/images/tamgiac.png"
+                                    alt=""
+                                  />
+                                  <span>
+                                    {index + 1}. {course.name || course.title}
+                                  </span>
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                          <ul>
+                            {courseGroup.courses.slice(Math.ceil(courseGroup.courses.length / 2)).map((course, index) => (
+                              <li key={course.id || index + Math.ceil(courseGroup.courses.length / 2)}>
+                                <a href={course.href || '#'} title={course.title || course.name}>
+                                  <img
+                                    style={{ padding: '0 5px 2px 0px' }}
+                                    src="/themes/images/tamgiac.png"
+                                    alt=""
+                                  />
+                                  <span>
+                                    {Math.ceil(courseGroup.courses.length / 2) + index + 1}. {course.name || course.title}
+                                  </span>
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Hiển thị lessons cho mỗi course group */}
+                  {courseGroup.courses && courseGroup.courses.length > 0 && (
+                    <div style={{ marginTop: '20px' }}>
+                      {courseGroup.courses.map((course, courseIndex) => {
+                        const courseLessons = lessonsMap[course.id] || [];
+                        const isLoading = lessonsLoading[course.id];
+                        
+                        if (isLoading) {
+                          return null; // Hoặc hiển thị loading indicator
+                        }
+
+                        if (courseLessons.length === 0) {
+                          return null;
+                        }
+
+                        return (
+                          <div key={course.id || courseIndex} style={{ marginBottom: '30px' }}>
+                            <h3
+                              style={{
+                                marginBottom: '10px',
+                                fontSize: '16px',
+                                color: '#df7100',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                              }}
+                              className="font-opensans-b"
+                            >
+                              <img src="/themes/images/star.png" alt="" style={{ width: '16px', height: '16px' }} />
+                              <strong>{course.name || course.title}</strong>
+                            </h3>
+                            <div className="subject-item no-bg pm0" style={{ paddingLeft: 0 }}>
+                              <div className="event-articles-wrap-2-cols">
+                                <ul>
+                                  {courseLessons.slice(0, Math.ceil(courseLessons.length / 2)).map((lesson, index) => (
+                                    <li key={lesson.id || index}>
+                                      <a href={lesson.href || '#'} title={lesson.title || lesson.name}>
+                                        <img
+                                          style={{ padding: '0 5px 2px 0px' }}
+                                          src="/themes/images/tamgiac.png"
+                                          alt=""
+                                        />
+                                        <span>
+                                          {index + 1}. {lesson.name || lesson.title}
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <ul>
+                                  {courseLessons.slice(Math.ceil(courseLessons.length / 2)).map((lesson, index) => (
+                                    <li key={lesson.id || index + Math.ceil(courseLessons.length / 2)}>
+                                      <a href={lesson.href || '#'} title={lesson.title || lesson.name}>
+                                        <img
+                                          style={{ padding: '0 5px 2px 0px' }}
+                                          src="/themes/images/tamgiac.png"
+                                          alt=""
+                                        />
+                                        <span>
+                                          {Math.ceil(courseLessons.length / 2) + index + 1}. {lesson.name || lesson.title}
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              </div>
+              ))}
+              {coursesList.length === 0 && !loading && (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                  Không có dữ liệu khóa học.
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
         <div

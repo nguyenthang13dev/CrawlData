@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/types/general';
-import { ListCourseBySubjectDtos } from '@/types/Subject/Subject';
+import { ListCourseBySubjectDtos, ListLessonByCourseDtos } from '@/types/Subject/Subject';
 import { apiService } from '../index';
 
 class SubjectNXBService {
@@ -11,13 +11,18 @@ class SubjectNXBService {
   ): Promise<ApiResponse<ListCourseBySubjectDtos[]>> {
     try {
       const response = await apiService.get<ListCourseBySubjectDtos[]>(
-        `/SubjectNXB/GetListCourseBySubject/${subjectId}`
+        `/SubjectNXB/GetListCourseBySubjetDtos?href=${subjectId}`
       );
       return response;
     } catch (error) {
       throw error;
     }
   }
+
+
+
+
+
 
   /**
    * Lấy danh sách Courses theo Subject ID với query params
@@ -35,6 +40,22 @@ class SubjectNXBService {
       }
 
       const response = await apiService.get<ListCourseBySubjectDtos[]>(url);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Lấy danh sách Lessons theo Course ID
+   */
+  public async getListLessonByCourse(
+    courseId: string
+  ): Promise<ApiResponse<ListLessonByCourseDtos[]>> {
+    try {
+      const response = await apiService.get<ListLessonByCourseDtos[]>(
+        `/SubjectNXB/GetListLessonByCourse?CourseId=${courseId}`
+      );
       return response;
     } catch (error) {
       throw error;

@@ -13,5 +13,8 @@ namespace N.Model.Entities
         public Guid? CourseId { get; set; }
         public int Grade { get; set; }
         public string Title { get; set; }
+
+        public string Href { get; set; }
+
     }
 }

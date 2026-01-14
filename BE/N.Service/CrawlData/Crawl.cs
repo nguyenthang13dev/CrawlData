@@ -91,6 +91,7 @@ namespace N.Service.CrawlData
                 CourseId = course.Id,
                 Title = title,
                 Grade = 1,
+                Href = url
             };
             if (!isCheckedLession)
             {
@@ -225,10 +226,7 @@ namespace N.Service.CrawlData
                     }
 
 
-                    if (titleSubject.ToUpper().Equals("MÔN NGỮ VĂN"))
-                    {
-                        ListHref.AddRange(listSujectNXH);
-                    }
+                    ListHref.AddRange(listSujectNXH);
 
                 }
 

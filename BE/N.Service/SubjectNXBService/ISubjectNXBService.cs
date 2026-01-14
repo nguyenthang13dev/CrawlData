@@ -12,7 +12,7 @@ namespace N.Service.SubjectNXBService
         Task<PagedList<SubjectNXBDto>> GetData(SubjectNXBSearchVM search);
 
         Task<SubjectNXBDto> GetDto(Guid id);
-        Task<List<ListCourseBySubjetDtos>> GetListCourseBySubjetDtos(Guid IdSub);
+        Task<List<ListCourseBySubjetDtos>> GetListCourseBySubjetDtos(string href);
         Task<SubjectNXB> SubjectCheck(string text);
     }
 }

@@ -3,6 +3,7 @@
 import React from 'react';
 
 import '../page.css';
+import { useParams, useRouter } from 'next/navigation';
 
 interface ResourceItemProps {
   title: string;
@@ -13,10 +14,15 @@ interface ResourceItemProps {
 const ResourceItem: React.FC<ResourceItemProps> = ({ title, href, bookCat }) => {
   const isDefaultCategory = bookCat === 'book-cat-0';
   const imageUrl = `/themes/images/${bookCat}.png`;
+  const router = useRouter();
+  const params = useParams();
+  const handleNavigate = () => {
+    router.push(`/${params.lop}/${href}`);
+  }
 
   return (
     <li className={`book-cat book-cat-show`}>
-      <a href={href} title={title}>
+      <a onClick={handleNavigate} title={title}>
         {isDefaultCategory ? (
           <img
             className={'triangleIcon'}

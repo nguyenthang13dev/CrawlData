@@ -12,5 +12,6 @@ namespace N.Service.SubjectNXBService.Dto
         public List<CourseDto> Courses { get; set; }
         public Guid IdPubSub { get; set; }
         public string Title { get; set; }
+        public string Href { get; set; }
     }
 }

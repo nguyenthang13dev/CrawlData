@@ -34,9 +34,9 @@ namespace N.Controllers
 
         [HttpGet("GetListCourseBySubjetDtos")]
         [AllowAnonymous]
-        public async Task<DataResponse<List<ListCourseBySubjetDtos>>> GetListCourseBySubjetDtos([FromQuery] Guid CourseId)
+        public async Task<DataResponse<List<ListCourseBySubjetDtos>>> GetListCourseBySubjetDtos([FromQuery] string href)
         {
-            var res = await _SubjectNXBService.GetListCourseBySubjetDtos(CourseId);
+            var res = await _SubjectNXBService.GetListCourseBySubjetDtos(href);
             return DataResponse<List<ListCourseBySubjetDtos>>.Success(res);
         }
 

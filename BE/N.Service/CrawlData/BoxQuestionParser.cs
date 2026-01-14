@@ -9,10 +9,6 @@ using System.Threading.Tasks;
 
 namespace N.Service.CrawlData
 {
-
-
-    
-
     public static class BoxQuestionParser
     {
         // domain để chuẩn hoá ảnh / link nếu cần
@@ -46,7 +42,8 @@ namespace N.Service.CrawlData
                     IsHeader = false,
                     LinkImage = null,
                     BlockType = "other",
-                    Lession = LessionId
+                    Lession = LessionId,
+                    
                 };
 
 

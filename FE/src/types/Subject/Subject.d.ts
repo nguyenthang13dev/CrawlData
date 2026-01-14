@@ -54,11 +54,27 @@ export interface SubjectNXBDto {
 export interface CourseDto {
     id: string;
     name: string;
-    [key: string]: any; // Cho phép các properties khác từ backend
+    href: string;
+    title: string;
+}
+
+export interface LessonDto {
+    id: string;
+    name: string;
+    href: string;
+    title: string;
+    courseId?: string;
+    [key: string]: any; // Allow other properties from backend
 }
 
 export interface ListCourseBySubjectDtos {
     courses: CourseDto[];
     idPubSub: string; // Guid trong C# -> string trong TypeScript
     title: string;
+}
+
+export interface ListLessonByCourseDtos {
+    lessons: LessonDto[];
+    courseId: string;
+    title?: string;
 }
